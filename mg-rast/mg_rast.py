@@ -1350,7 +1350,7 @@ class Parse:
 
         return dict_kingdom
 
-    def create_json_d3(self, json):
+    def create_json_d3(self, json, level):
         json_d3 = {}
         for key_kingdom, data_phylum in json.items():
             # print(key_kingdom)
@@ -1400,28 +1400,27 @@ class Parse:
                             for key_genus, data_species in data_genus.items():
                                 # print(key_genus)
 
-                                # Without species
-                                _children5 = {'name': key_genus,
-                                              'size': len(data_species)}
-                                json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'].insert(_index_genus, _children5)
+                                if level == 'genus':
+                                    # Without species
+                                    _children5 = {'name': key_genus,
+                                                  'size': len(data_species)}
+                                    json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'].insert(_index_genus, _children5)
+                                elif level == 'species':
+                                    # With species
+                                    _children5 = {'name': key_genus,
+                                                  'size': len(data_species),
+                                                  'children': []}
+                                    json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'].insert(_index_genus, _children5)
 
-                                '''
-                                # With species
-                                _children5 = {'name': key_genus,
-                                              'size': len(data_species),
-                                              'children': []}
-                                json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'].insert(_index_genus, _children5)
+                                    _index_species = 0
+                                    for key_species, _ in data_species.items():
+                                        # print(key_species)
 
-                                _index_species = 0
-                                for key_species, _ in data_species.items():
-                                    # print(key_species)
+                                        _children6 = {'name': key_species,
+                                                      'size': 1}
+                                        json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'][_index_genus]['children'].insert(_index_species, _children6)
 
-                                    _children6 = {'name': key_species,
-                                                  'size': 1}
-                                    json_d3['children'][_index_phylum]['children'][_index_class]['children'][_index_order]['children'][_index_family]['children'][_index_genus]['children'].insert(_index_species, _children6)
-
-                                    _index_species += 1
-                                '''
+                                        _index_species += 1
 
                                 _index_genus += 1
 
@@ -1435,12 +1434,17 @@ class Parse:
 
         return json_d3
 
-    def create_json_d3_file(self):
+    def create_json_d3_file(self, level = 'species'):
         self.fill_dataframe()
         json = self.create_json()
-        json_d3_raw = self.create_json_d3(json)
+        json_d3_raw = self.create_json_d3(json, level)
 
-        json_d3 = os.path.join(self.OUTPUT_PATH, 'network.json')
+        if level == 'species':
+            json_name = 'network-species.json'
+        elif level == 'genus':
+            json_name = 'network-genus.json'
+
+        json_d3 = os.path.join(self.OUTPUT_PATH, json_name)
         with open(json_d3, 'w') as fw:
             fw.write(str(json_d3_raw).replace('\'', '"'))
         fw.close()
@@ -1617,6 +1621,14 @@ def main(args):
         oparse.show_print("########################### RUN ###########################", [oparse.LOG_FILE], font = oparse.BIGREEN)
         oparse.show_print("###########################################################", [oparse.LOG_FILE], font = oparse.BIGREEN)
 
+        ############################################
+        # Crear el fill_file y el .json
+        # Disponer el taxonomic_rank.csv curado
+        oparse.create_json_d3_file()
+        oparse.create_json_d3_file(level = 'genus')
+        exit()
+        ############################################
+
         # oparse.validate_taxonomy()
         # exit()
 
@@ -1643,6 +1655,7 @@ def main(args):
         oparse.create_ghepi_files(dict_superkingdom, dict_kingdom, dict_phylum, dict_class, dict_order, dict_family, dict_genus, dict_species)
 
         oparse.create_json_d3_file()
+        oparse.create_json_d3_file(level = 'genus')
 
         oparse.show_print(oparse.finish_time(start, "Elapsed time"), [oparse.LOG_FILE])
         oparse.show_print("Done.", [oparse.LOG_FILE])
