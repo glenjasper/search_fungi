@@ -122,7 +122,7 @@ class Parse:
         self.RANK_CLADE = 'clade'
         self.RANK_NO_RANK = 'no rank'
 
-        self.RANK_SPECIES_DB = 'species (db)'
+        self.RANK_SPECIES_DB = 'species (Taxonomy)'
 
         self.SUPERKINGDOM_EUKARYOTA = 'Eukaryota'
         self.SUPERKINGDOM_BACTERIA = 'Bacteria'
@@ -547,6 +547,7 @@ class Parse:
                         Cricetinae gen. sp.
                     '''
                     if organism:
+                        organism = organism.replace('[', '').replace(']', '')
                         _organism = organism.split()
 
                         # print('>>>', organism)

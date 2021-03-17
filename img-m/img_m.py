@@ -170,6 +170,7 @@ class Parse:
         for _, data in dict_biosamples.items():
             _count = data[self.KEY_COUNT]
             organism = data[self.RANK_SPECIES]
+            organism = organism.replace('[', '').replace(']', '')
             _organism = organism.split()
 
             if re.search('^[a-z]', organism) or \

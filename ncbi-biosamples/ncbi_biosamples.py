@@ -75,7 +75,7 @@ class Parse:
         self.RANK_CLADE = 'clade'
         self.RANK_NO_RANK = 'no rank'
 
-        self.RANK_SPECIES_DB = 'species (db)'
+        self.RANK_SPECIES_DB = 'species (Taxonomy)'
 
         self.SUPERKINGDOM_EUKARYOTA = 'Eukaryota'
         self.KINGDOM_FUNGI = 'Fungi'
@@ -230,6 +230,8 @@ class Parse:
         for _, data in dict_biosamples.items():
             biosample = data['biosample']
             organism = data['organism']
+            organism = organism.replace('[', '').replace(']', '')
+
             _organism = organism.split()
 
             # print('>>>', organism)

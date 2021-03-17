@@ -306,6 +306,7 @@ class Parse:
         # https://www.ebi.ac.uk/metagenomics/api/v1/analyses/MGYA00095498/taxonomy
         # https://www.ebi.ac.uk/metagenomics/api/v1/analyses/MGYA00009786/taxonomy
         # https://www.ebi.ac.uk/metagenomics/api/v1/analyses/MGYA00363399/taxonomy
+        # https://www.ebi.ac.uk/metagenomics/api/v1/analyses/MGYA00502571/taxonomy
         taxonomic_rank = {}
         if analysis_id:
             index = 0
